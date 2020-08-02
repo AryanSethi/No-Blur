@@ -17,8 +17,8 @@ def random_element():
 y1,x1= 0,0
 y2,x2=200,200
 
-if not os.path.exists('train_y/image-1.jpg'):
-    for image in all_images[:5]:
+if not os.path.exists('train_y/image.jpg'):
+    for image in all_images:
         img = cv2.imread('all/%s'%image)
 
         img= cv2.resize(img,(800,600))
