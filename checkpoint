@@ -1,2 +1,0 @@
-model_checkpoint_path: "deblur.h5py"
-all_model_checkpoint_paths: "deblur.h5py"
