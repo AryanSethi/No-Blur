@@ -1,26 +1,44 @@
-#from tensorflow import keras
-#from tensorflow.keras.utils import Sequence
-#import tensorflow as tf
+from tensorflow import keras
+import tensorflow as tf
 import os
 import numpy as np
 import cv2
 from matplotlib import pyplot as plt
+from utils import image_generator as ig
 
 
-model=keras.models.load_model('..\best_models/try4')
+testing  = ig.DataGenerator('..\data/test_x/test_x','..\data/test_y/test_y',(128,128), batch_size=10, shuffle=False)
 
-for test_x_name,test_y_name in zip(os.listdir('..\data/test_x/test_x/'),os.listdir('..\data/test_y/test_y/')):
-    test_x_path= "..\data/test_x/test_x/"+test_x_name
-    test_y_path= "..\data/test_y/test_y/"+test_y_name
+model= keras.models.load_model('../best_models/try5')   ################################################
+name=0
+for batch in range(150):
+    testx, testy = testing[batch]
+    predictions = model.predict(testx)
+    i=0
+    for prediction in predictions:
+        prediction = cv2.resize(prediction*255,(300,300))
+        prediction = cv2.cvtColor(prediction.astype(np.uint8),cv2.COLOR_RGB2BGR)
 
-    test_x=cv2.imread(test_x_path)
-    test_y=cv2.imread(test_y_path)
-    prediction=model.predict(cv2.resize(test_x,(128,128) ) )
-    cv2.resize(prediction,(200,200))
-    final=cv2.hconcat([test_x,test_y,prediction])
+        test_x_image = cv2.resize(testx[i]*255,(300,300))
+        test_x_image = test_x_image.astype(np.uint8)
+        test_x_image = cv2.cvtColor(test_x_image, cv2.COLOR_RGB2BGR)
 
-    write_name='..\eval/deblur/'+test_x_name
-    cv2.imwrite(write_name,final)
+        test_y_image = cv2.resize(testy[i]*255,(300,300))
+        test_y_image = test_y_image.astype(np.uint8)
+        test_y_image = cv2.cvtColor(test_y_image, cv2.COLOR_RGB2BGR)
+
+        final= cv2.hconcat([test_x_image,test_y_image,prediction])
+        write_name = '..\eval/deblur/try3/' + 'd-'+str(name)+'-'+str(i)+'.jpg'   ###################################
+        cv2.imwrite(write_name, final)
+        i+=1
+    name+=1
+
+
+
+
+
+
+
 
 
 
